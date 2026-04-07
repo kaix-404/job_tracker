@@ -1,8 +1,11 @@
 import dotenv from "dotenv";
 dotenv.config();
 
-import app from "./app";
 import mongoose from "mongoose";
+import app from "./app";
+import authRoutes from "./routes/auth.routes";
+
+app.use("/api/auth", authRoutes);
 
 const PORT = process.env.PORT || 5000;
 

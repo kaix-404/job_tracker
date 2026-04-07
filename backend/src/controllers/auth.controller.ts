@@ -18,7 +18,12 @@ export const register = async (req: Request, res: Response) => {
       expiresIn: "7d"
     });
 
-    res.json({ token });
+    res.json({ 
+        token, 
+        user: { 
+            email: user.email 
+        } 
+    });
   } catch (err) {
     res.status(500).json({ message: "Error registering" });
   }
@@ -29,16 +34,21 @@ export const login = async (req: Request, res: Response) => {
     const { email, password } = req.body;
 
     const user = await User.findOne({ email });
-    if (!user) return res.status(400).json({ message: "Invalid creds" });
+    if (!user) return res.status(400).json({ message: "Invalid credentials" });
 
     const match = await bcrypt.compare(password, user.password);
-    if (!match) return res.status(400).json({ message: "Invalid creds" });
+    if (!match) return res.status(400).json({ message: "Invalid credentials" });
 
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET!, {
       expiresIn: "7d"
     });
 
-    res.json({ token });
+    res.json({ 
+        token, 
+        user: { 
+            email: user.email 
+        } 
+    });
   } catch {
     res.status(500).json({ message: "Error logging in" });
   }

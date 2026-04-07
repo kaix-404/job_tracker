@@ -80,6 +80,7 @@ export default function Dashboard() {
           <KanbanBoard
             data={filteredData}
             isLoading={isLoading}
+            refetch={refetch}
           />
         </div>
 

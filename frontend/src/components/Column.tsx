@@ -1,3 +1,4 @@
+import { useDroppable } from "@dnd-kit/core";
 import Card from "./Card.tsx";
 
 const colors: any = {
@@ -8,14 +9,16 @@ const colors: any = {
   Rejected: "bg-red-900/30 border-red-700"
 };
 
-export default function Column({ title, items }: any) {
-  return (
-    <div className={`p-3 rounded-xl border ${colors[title]}`}>
-      <h2 className="font-bold mb-3">{title}</h2>
+export default function Column({ id, title, items }: any) {
+    const { setNodeRef } = useDroppable({ id });
 
-      {items.map((item: any) => (
-        <Card key={item._id} item={item} />
-      ))}
-    </div>
-  );
-}
+    return (
+        <div ref={setNodeRef} className={`p-3 rounded-xl border ${colors[title]}`}>
+        <h2 className="font-bold mb-3">{title}</h2>
+
+        {items.map((item: any) => (
+            <Card key={item._id} item={item} />
+        ))}
+        </div>
+    );
+    }

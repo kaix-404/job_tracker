@@ -12,10 +12,10 @@ const router = express.Router();
 
 router.use(protect);
 
-router.post("/", createApplication);
-router.get("/", getApplications);
-router.put("/:id", updateApplication);
-router.delete("/:id", deleteApplication);
-router.patch("/:id/status", updateStatus);
+router.post("/", protect, createApplication);
+router.get("/", protect, getApplications);
+router.put("/:id", protect, updateApplication);
+router.delete("/:id", protect, deleteApplication);
+router.patch("/:id/status", protect, updateStatus);
 
 export default router;
