@@ -32,7 +32,10 @@ export default function Auth() {
       setLoading(true);
 
       const url = isLogin ? "/auth/login" : "/auth/register";
-      const res = await API.post(url, form);
+      const res = await API.post(url, {
+        email: form.email.trim(),
+        password: form.password
+      });
 
       localStorage.setItem("token", res.data.token);
       toast.success(isLogin ? "Logged in!" : "Registered!");
