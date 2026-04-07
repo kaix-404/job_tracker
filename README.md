@@ -39,6 +39,7 @@ npm run dev
 Create a `.env` file in `/backend`:
 
 ```
+PORT=5000
 MONGO_URI=your_mongodb_uri
 JWT_SECRET=your_secret
 OPENAI_API_KEY=your_key
@@ -48,10 +49,6 @@ OPENAI_API_KEY=your_key
 
 AI features require valid OpenAI API credits.
 If unavailable, fallback/mock responses can be used.
-
-## 📸 Screenshots
-
-(Add screenshots here)
 
 ## 📌 Future Improvements
 
