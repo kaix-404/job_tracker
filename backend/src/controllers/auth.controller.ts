@@ -14,9 +14,9 @@ export const register = async (req: Request, res: Response) => {
     const existing = await User.findOne({ email });
     if (existing) return res.status(400).json({ message: "User exists" });
 
-    const hashed = await bcrypt.hash(password, 10);
+    const hashed = await bcrypt.hash(password.trim(), 12);
 
-    const user = await User.create({ email, password: hashed });
+    const user = await User.create({ email: email.trim(), password: hashed });
 
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET!, {
       expiresIn: "7d"
@@ -28,12 +28,17 @@ export const register = async (req: Request, res: Response) => {
             email: user.email 
         } 
     });
+
   } catch (err) {
     res.status(500).json({ message: "Error registering" });
   }
 };
 
 export const login = async (req: Request, res: Response) => {
+
+  const testHash = await bcrypt.hash("12345", 12);
+  const testMatch = await bcrypt.compare("12345", testHash);
+
   try {
     const { email, password } = req.body;
 
@@ -47,6 +52,9 @@ export const login = async (req: Request, res: Response) => {
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return res.status(400).json({ message: "Invalid credentials" });
+    }
 
     const token = jwt.sign(
       { id: user._id },
@@ -58,10 +66,6 @@ export const login = async (req: Request, res: Response) => {
       token,
       user: { email: user.email }
     });
-
-    console.log("INPUT PASSWORD:", password);
-    console.log("DB HASH:", user.password);
-    console.log("MATCH RESULT:", isMatch);
     
   } catch (err) {
     console.error("LOGIN ERROR:", err);

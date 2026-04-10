@@ -1,4 +1,5 @@
 import { useDroppable } from "@dnd-kit/core";
+import { memo } from "react";
 import Card from "./Card.tsx";
 
 const colors: any = {
@@ -8,8 +9,7 @@ const colors: any = {
   Offer: "bg-green-900/30 border-green-700",
   Rejected: "bg-red-900/30 border-red-700"
 };
-
-export default function Column({ id, title, items }: any) {
+function Column({ id, title, items }: any) {
     const { setNodeRef } = useDroppable({ id });
 
     return (
@@ -21,4 +21,5 @@ export default function Column({ id, title, items }: any) {
         ))}
         </div>
     );
-    }
+}
+export default memo(Column);

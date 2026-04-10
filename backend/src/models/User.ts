@@ -22,12 +22,6 @@ const UserSchema = new Schema<IUser>({
   },
 }, { timestamps: true });
 
-UserSchema.pre("save", async function () {
-  if (!this.isModified("password")) return;
-
-  this.password = await bcrypt.hash(this.password, 12);
-});
-
 UserSchema.methods.comparePassword = function (candidate: string) {
   if (!this.password) {
     throw new Error("Password not loaded in document");
