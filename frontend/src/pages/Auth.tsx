@@ -33,7 +33,7 @@ export default function Auth() {
 
       const url = isLogin ? "/auth/login" : "/auth/register";
       const res = await API.post(url, {
-        email: form.email.trim(),
+        email: form.email,
         password: form.password
       });
 
@@ -42,8 +42,8 @@ export default function Auth() {
 
       window.location.href = "/";
     } catch (err: any) {
-      console.error(err);
-      toast.error(err?.response?.data?.message || "Auth failed");
+      console.error(err.response?.data || err);
+      toast.error(err.response?.data?.message || "Auth failed");
     } finally {
       setLoading(false);
     }

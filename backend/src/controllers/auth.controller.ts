@@ -37,23 +37,34 @@ export const login = async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body;
 
-    const user = await User.findOne({ email });
-    if (!user) return res.status(400).json({ message: "Invalid credentials" });
+    if (!email || !password) {
+      return res.status(400).json({ message: "All fields required" });
+    }
 
-    const match = await bcrypt.compare(password, user.password);
-    if (!match) return res.status(400).json({ message: "Invalid credentials" });
+    const user = await User.findOne({ email }).select("+password");
+    if (!user) {
+      return res.status(400).json({ message: "Invalid credentials" });
+    }
 
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET!, {
-      expiresIn: "7d"
+    const isMatch = await bcrypt.compare(password, user.password);
+
+    const token = jwt.sign(
+      { id: user._id },
+      process.env.JWT_SECRET || "secret",
+      { expiresIn: "7d" }
+    );
+
+    res.json({
+      token,
+      user: { email: user.email }
     });
 
-    res.json({ 
-        token, 
-        user: { 
-            email: user.email 
-        } 
-    });
-  } catch {
-    res.status(500).json({ message: "Error logging in" });
+    console.log("INPUT PASSWORD:", password);
+    console.log("DB HASH:", user.password);
+    console.log("MATCH RESULT:", isMatch);
+    
+  } catch (err) {
+    console.error("LOGIN ERROR:", err);
+    res.status(500).json({ message: "Server error" });
   }
 };

@@ -1,4 +1,4 @@
-import mongoose, { Document, Schema } from 'mongoose';
+import mongoose, { Document, Schema, HydratedDocument } from 'mongoose';
 import bcrypt from 'bcryptjs';
 
 export interface IUser extends Document {
@@ -22,15 +22,16 @@ const UserSchema = new Schema<IUser>({
   },
 }, { timestamps: true });
 
-UserSchema.pre('save', async function () {
-  const user = this as IUser;
+UserSchema.pre("save", async function () {
+  if (!this.isModified("password")) return;
 
-  if (!user.isModified('password')) return;
-
-  user.password = await bcrypt.hash(user.password, 12);
+  this.password = await bcrypt.hash(this.password, 12);
 });
 
 UserSchema.methods.comparePassword = function (candidate: string) {
+  if (!this.password) {
+    throw new Error("Password not loaded in document");
+  }
   return bcrypt.compare(candidate, this.password);
 };
 
